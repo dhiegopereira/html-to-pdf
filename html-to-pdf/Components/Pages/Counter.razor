@@ -1,0 +1,66 @@
+﻿@page "/counter"
+@using DinkToPdf
+@using DinkToPdf.Contracts
+@rendermode InteractiveServer
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<button class="btn btn-primary" @onclick="Print">Click me</button>
+
+@code {
+
+    private void Print()
+    {
+        var converter = new BasicConverter(new PdfTools());
+
+        var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings() { Top = 10 },
+                Out = @"D:\dhieg\Documents\Jobs\Novigo\sample\html-to-pdf\html-to-pdf\test.pdf",
+            },
+                Objects = {
+                new ObjectSettings() {
+                    PagesCount = true,
+                    HtmlContent = @"
+                        <!DOCTYPE html>
+                        <html lang='en'>
+                        <head>
+                            <meta charset='UTF-8'>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                            <title>Document</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                }
+                                .container {
+                                    width: 100%;
+                                    margin: 0 auto;
+                                    padding: 20px;
+                                }
+                                h2 {
+                                    color: blue;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h2>This is a sample HTML content</h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In consectetur mauris eget ultrices iaculis.</p>
+                                <p>Ut odio viverra, molestie lectus nec, venenatis turpis.</p>
+                            </div>
+                        </body>
+                        </html>",
+                    WebSettings = { DefaultEncoding = "utf-8" },
+                    HeaderSettings = { FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812 }
+                }
+            }
+            };
+        converter.Convert(doc);
+    }
+}
